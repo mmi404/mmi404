@@ -27,3 +27,7 @@ plan/
 # (backend/uploads/, already gitignored above), which is the actual source
 # of truth per the DB-backed-content architecture. These are just scratch.
 docs/assets/screenshots/
+
+# Session handoff brief (shared via a private Claude Code onboarding link,
+# not meant for public git history — see ShareOnboardingGuide usage).
+ONBOARDING.md
