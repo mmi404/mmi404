@@ -28,6 +28,7 @@ plan/
 # of truth per the DB-backed-content architecture. These are just scratch.
 docs/assets/screenshots/
 
-# Session handoff brief (shared via a private Claude Code onboarding link,
-# not meant for public git history — see ShareOnboardingGuide usage).
+# Session handoff material for manual transfer to the VPS (memory export,
+# notes) — purely local, never uploaded anywhere, never committed.
 ONBOARDING.md
+.handoff/
