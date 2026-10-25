@@ -6,6 +6,11 @@ import type { ProjectImage } from "@/lib/api";
 
 export function ImageGallery({ images }: { images: ProjectImage[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [failedUrls, setFailedUrls] = useState<Set<string>>(new Set());
+
+  const markFailed = useCallback((url: string) => {
+    setFailedUrls((prev) => (prev.has(url) ? prev : new Set(prev).add(url)));
+  }, []);
 
   const close = useCallback(() => setOpenIndex(null), []);
   const next = useCallback(
@@ -46,16 +51,20 @@ export function ImageGallery({ images }: { images: ProjectImage[] }) {
               image.caption ? `: ${image.caption}` : ""
             } in lightbox`}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={image.imageUrl}
-              alt={image.caption ?? ""}
-              loading="lazy"
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
-              }}
-            />
+            {failedUrls.has(image.imageUrl) ? (
+              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-surface-raised to-surface px-3 text-center">
+                <span className="text-xs text-muted">Image unavailable</span>
+              </div>
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={image.imageUrl}
+                alt={image.caption ?? ""}
+                loading="lazy"
+                className="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
+                onError={() => markFailed(image.imageUrl)}
+              />
+            )}
           </button>
         ))}
       </div>
@@ -116,12 +125,19 @@ export function ImageGallery({ images }: { images: ProjectImage[] }) {
               className="flex max-h-full max-w-3xl flex-col items-center gap-3"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={images[openIndex].imageUrl}
-                alt={images[openIndex].caption ?? ""}
-                className="max-h-[75vh] w-auto rounded-lg object-contain"
-              />
+              {failedUrls.has(images[openIndex].imageUrl) ? (
+                <div className="flex h-64 w-96 max-w-full items-center justify-center rounded-lg bg-gradient-to-br from-surface-raised to-surface">
+                  <span className="text-sm text-muted">Image unavailable</span>
+                </div>
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={images[openIndex].imageUrl}
+                  alt={images[openIndex].caption ?? ""}
+                  className="max-h-[75vh] w-auto rounded-lg object-contain"
+                  onError={() => markFailed(images[openIndex].imageUrl)}
+                />
+              )}
               {images[openIndex].caption && (
                 <figcaption className="text-center text-sm text-secondary">
                   {images[openIndex].caption}

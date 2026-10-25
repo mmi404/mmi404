@@ -1,5 +1,6 @@
 import { isAddProject, type Project } from "@/lib/api";
 import { TechTagChips } from "@/components/tech-tag-chips";
+import { ExternalLinkIcon } from "@/components/icons/external-link";
 import { Markdown } from "@/components/markdown";
 import { OverviewToggle } from "@/components/project-detail/overview-toggle";
 import { ImageGallery } from "@/components/project-detail/image-gallery";
@@ -9,7 +10,7 @@ export function ProjectDetailView({ project }: { project: Project }) {
   const isAdd = isAddProject(project);
 
   return (
-    <article className="mx-auto max-w-5xl px-6 py-16">
+    <article className="mx-auto max-w-7xl px-6 py-16">
       <Reveal>
         {!isAdd && (
           <p className="font-mono-tag mb-3 inline-block rounded-full border border-border-subtle px-3 py-1 text-[11px] uppercase tracking-wider text-muted">
@@ -48,9 +49,10 @@ export function ProjectDetailView({ project }: { project: Project }) {
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full border border-border-strong px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:border-accent hover:text-accent"
+                className="inline-flex items-center gap-1.5 rounded-full border border-accent bg-accent/10 px-5 py-2.5 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-surface"
               >
                 View source
+                <ExternalLinkIcon className="h-3.5 w-3.5" />
               </a>
             )}
           </div>

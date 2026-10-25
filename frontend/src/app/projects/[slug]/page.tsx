@@ -63,7 +63,7 @@ async function ProjectContent({
 
 function ProjectSkeleton() {
   return (
-    <div className="mx-auto max-w-5xl px-6 py-16">
+    <div className="mx-auto max-w-7xl px-6 py-16">
       <div className="h-10 w-2/3 animate-pulse rounded bg-surface-raised" />
       <div className="mt-6 h-20 w-full animate-pulse rounded bg-surface-raised" />
       <div className="mt-6 h-8 w-1/2 animate-pulse rounded bg-surface-raised" />
