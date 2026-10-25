@@ -22,14 +22,14 @@ export function TechTagChips({
       {visible.map((tag) => (
         <li
           key={tag}
-          className={`font-mono-tag rounded-full border border-border-subtle bg-surface-raised ${padding} text-secondary`}
+          className={`font-mono-tag rounded-md border border-border-subtle bg-surface-raised ${padding} text-secondary`}
         >
           {tag}
         </li>
       ))}
       {hiddenCount > 0 && (
         <li
-          className={`font-mono-tag rounded-full border border-border-subtle bg-surface-raised ${padding} text-muted`}
+          className={`font-mono-tag rounded-md border border-border-subtle bg-surface-raised ${padding} text-muted`}
           aria-label={`${hiddenCount} more technologies`}
         >
           +{hiddenCount}

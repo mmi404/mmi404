@@ -79,7 +79,7 @@ function AboutContent({ profile }: { profile: Profile }) {
               href={profile.resumeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block rounded-full border border-border-strong px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:border-accent hover:text-accent"
+              className="inline-block rounded-lg border border-border-strong px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:border-accent hover:text-accent"
             >
               Download resume
             </a>
@@ -97,7 +97,7 @@ function AboutContent({ profile }: { profile: Profile }) {
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="rounded-full border border-border-subtle px-4 py-2 text-sm text-secondary transition-colors hover:border-accent hover:text-accent"
+                      className="rounded-md border border-border-subtle px-4 py-2 text-sm text-secondary transition-colors hover:border-accent hover:text-accent"
                     >
                       {link.label}
                     </a>

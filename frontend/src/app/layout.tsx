@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/site-footer";
 
 export const metadata: Metadata = {
   title: {
-    default: "mmi404 — Developer Portfolio",
+    default: "mmi404",
     template: "%s | mmi404",
   },
   description:

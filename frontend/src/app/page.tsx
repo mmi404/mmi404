@@ -14,10 +14,12 @@ import { Reveal } from "@/components/motion/reveal";
 export async function generateMetadata(): Promise<Metadata> {
   const persona = await getPrimaryPersona();
   if (!persona) {
-    return { title: "mmi404 — Developer Portfolio" };
+    return { title: "mmi404" };
   }
   return {
-    title: `${persona.displayName} Portfolio`,
+    // This is the root page, so the layout's "%s | mmi404" template does not
+    // wrap it — write the full tab title here, not just a persona label.
+    title: `mmi404 — ${persona.tagline}`,
     description: persona.tagline,
   };
 }

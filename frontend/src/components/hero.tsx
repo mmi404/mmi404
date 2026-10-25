@@ -39,13 +39,13 @@ export function Hero({
       <div className="flex flex-wrap gap-4 pt-2">
         <Link
           href="#projects"
-          className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-surface transition-colors hover:bg-accent-hover"
+          className="rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-surface transition-colors hover:bg-accent-hover"
         >
           View projects
         </Link>
         <Link
           href="/about"
-          className="rounded-full border border-border-strong px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:border-accent hover:text-accent"
+          className="rounded-lg border border-border-strong px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:border-accent hover:text-accent"
         >
           About &amp; contact
         </Link>

@@ -13,7 +13,7 @@ export function ProjectDetailView({ project }: { project: Project }) {
     <article className="mx-auto max-w-7xl px-6 py-16">
       <Reveal>
         {!isAdd && (
-          <p className="font-mono-tag mb-3 inline-block rounded-full border border-border-subtle px-3 py-1 text-[11px] uppercase tracking-wider text-muted">
+          <p className="font-mono-tag mb-3 inline-block rounded-md border border-border-subtle px-3 py-1 text-[11px] uppercase tracking-wider text-muted">
             Confidential engagement
           </p>
         )}
@@ -39,7 +39,7 @@ export function ProjectDetailView({ project }: { project: Project }) {
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-surface transition-colors hover:bg-accent-hover"
+                className="rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-surface transition-colors hover:bg-accent-hover"
               >
                 View live site
               </a>
@@ -49,7 +49,7 @@ export function ProjectDetailView({ project }: { project: Project }) {
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-full border border-accent bg-accent/10 px-5 py-2.5 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-surface"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-accent bg-accent/10 px-5 py-2.5 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-surface"
               >
                 View source
                 <ExternalLinkIcon className="h-3.5 w-3.5" />
