@@ -7,7 +7,7 @@
 #   docker exec shared_proxy_caddy caddy validate --config /etc/caddy/Caddyfile
 #   docker exec shared_proxy_caddy caddy reload   --config /etc/caddy/Caddyfile
 #
-# The portfolio's frontend container must be named `portfolio_frontend` and be
+# The portfolio's frontend container must be named `mmi404_frontend` and be
 # attached to the external Docker network `edge` (the network Caddy sits on).
 # The backend and MySQL stay on the project's private network: the Next.js
 # frontend proxies /api/*, /media/* and the admin calls to the backend itself,
@@ -25,7 +25,7 @@ mmi404.com {
         -Server
     }
 
-    reverse_proxy portfolio_frontend:3000
+    reverse_proxy mmi404_frontend:3000
 
     log {
         output stdout

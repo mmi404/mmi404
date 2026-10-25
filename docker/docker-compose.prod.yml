@@ -1,0 +1,93 @@
+# Production stack for mmi404.com on the shared VPS.
+#
+# - No host ports are published. The VPS's shared Caddy (shared_proxy_caddy,
+#   owner of 80/443) reaches ONLY mmi404_frontend, over the external `edge`
+#   network. See docker/caddy/mmi404.Caddyfile.
+# - mysql and backend live on the private `internal` network and are
+#   unreachable from Caddy, other sites, or the internet.
+# - Secrets come from docker/.env.prod (gitignored); copy .env.prod.example.
+#   Every required variable fails loudly if unset.
+#
+# Run from the repo root:
+#   docker compose --env-file docker/.env.prod -f docker/docker-compose.prod.yml up -d --build
+name: mmi404
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: mmi404_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: portfolio
+      MYSQL_USER: mmi404
+      MYSQL_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in docker/.env.prod}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?set DB_ROOT_PASSWORD in docker/.env.prod}
+    volumes:
+      - mmi404_mysql_data:/var/lib/mysql
+    networks: [internal]
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    image: mmi404-backend:local
+    container_name: mmi404_backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      # "prod" has no profile file on purpose: it skips application-dev.yml, so
+      # the dev JWT secret / dev admin / non-Secure cookie are never loaded.
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/portfolio?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: mmi404
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_FLYWAY_URL: jdbc:mysql://mysql:3306/portfolio?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_FLYWAY_USER: mmi404
+      SPRING_FLYWAY_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in docker/.env.prod (>= 32 bytes)}
+      # Only used when admin_user is empty (first boot / after the restore step).
+      ADMIN_BOOTSTRAP_USERNAME: ${ADMIN_USERNAME:?set ADMIN_USERNAME in docker/.env.prod}
+      ADMIN_BOOTSTRAP_PASSWORD: ${ADMIN_PASSWORD:?set ADMIN_PASSWORD in docker/.env.prod}
+      JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=60
+    volumes:
+      - mmi404_uploads:/app/uploads
+    networks: [internal]
+    mem_limit: 768m
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    image: mmi404-frontend:local
+    container_name: mmi404_frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      API_BASE_URL: http://mmi404_backend:8080
+      SITE_URL: https://mmi404.com
+    networks: [internal, edge]
+    mem_limit: 512m
+
+networks:
+  internal:
+  edge:
+    external: true
+
+volumes:
+  mmi404_mysql_data:
+  mmi404_uploads:

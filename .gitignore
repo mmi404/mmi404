@@ -8,6 +8,8 @@ Thumbs.db
 .env
 .env.local
 *.env
+.env.*
+!.env.*.example
 
 # backend image-upload volume mount point (dev-only, matches docker compose)
 backend/uploads/
