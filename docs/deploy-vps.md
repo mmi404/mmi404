@@ -39,12 +39,13 @@ docker exec mmi404_mysql mysql -u mmi404 -p"$DB_PASSWORD" portfolio \
 
 ```bash
 docker compose --env-file docker/.env.prod -f docker/docker-compose.prod.yml up -d --build
-docker run --rm -v mmi404_uploads:/data -v "$PWD/plan:/backup:ro" alpine \
+docker run --rm -v mmi404_mmi404_uploads:/data -v "$PWD/plan:/backup:ro" alpine \
   sh -c 'tar xzf /backup/uploads-backup.tar.gz -C /data && chmod -R a+rX /data'
 docker compose --env-file docker/.env.prod -f docker/docker-compose.prod.yml restart backend
 ```
 
-(Project name is `mmi404`, so volumes are `mmi404_mysql_data` and `mmi404_uploads`.)
+(Compose prefixes the project name `mmi404`, so the real volumes are `mmi404_mmi404_mysql_data` and
+`mmi404_mmi404_uploads`. Restoring into any other volume name silently does nothing.)
 
 ## 4. Route traffic (shared Caddy)
 
@@ -62,7 +63,7 @@ file would affect every site on the box.
 ## 5. Verify
 
 ```bash
-docker exec mmi404_frontend wget -qO- http://localhost:3000/ | grep -c "Screenshot coming soon"   # 0
+curl -s https://mmi404.com | grep -c "Screenshot coming soon"   # 0
 curl -sI https://mmi404.com | head -3        # 200, valid cert
 curl -sI https://www.mmi404.com | head -3    # 301 -> https://mmi404.com
 ```

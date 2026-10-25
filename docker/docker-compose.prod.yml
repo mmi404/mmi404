@@ -58,7 +58,13 @@ services:
       JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=60
     volumes:
       - mmi404_uploads:/app/uploads
-    networks: [internal]
+    networks:
+      internal:
+        # Container names contain "_", which Tomcat rejects in a Host header
+        # (HTTP 400). The frontend therefore calls this hyphenated alias. Do NOT
+        # use the bare name "backend": other sites on the shared `edge` network
+        # already claim that alias.
+        aliases: [mmi404-backend]
     mem_limit: 768m
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
@@ -78,7 +84,7 @@ services:
       backend:
         condition: service_healthy
     environment:
-      API_BASE_URL: http://mmi404_backend:8080
+      API_BASE_URL: http://mmi404-backend:8080
       SITE_URL: https://mmi404.com
     networks: [internal, edge]
     mem_limit: 512m
