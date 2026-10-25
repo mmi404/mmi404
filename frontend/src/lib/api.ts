@@ -54,11 +54,17 @@ async function apiFetch<T>(path: string): Promise<T | null> {
   return (await res.json()) as T;
 }
 
-/** Resolve a possibly-relative media path returned by the backend into an absolute URL. */
+/**
+ * Resolve a possibly-relative media path returned by the backend into a URL
+ * a browser can actually load. This deliberately does NOT use API_BASE_URL
+ * (a server-to-server address, not reachable from a browser — see the
+ * /media proxy route this rewrites into) and is safe to call from both
+ * Server Components and "use client" code, unlike API_BASE_URL itself.
+ */
 export function resolveMediaUrl(path: string | null | undefined): string | null {
   if (!path) return null;
   if (/^https?:\/\//i.test(path)) return path;
-  return `${API_BASE_URL}${path.startsWith("/") ? "" : "/"}${path}`;
+  return `/media${path.startsWith("/") ? "" : "/"}${path}`;
 }
 
 // ---------------------------------------------------------------------------

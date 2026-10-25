@@ -18,3 +18,12 @@ backend/uploads/
 # public. Used locally only as the seed-data source for Flyway migrations.
 plan/
 *.log
+
+# Claude Code local harness state (scheduled-task lock file, not project config)
+.claude/
+
+# Local staging copies of live-site screenshots used to seed the admin image
+# uploader — the uploaded copies live in the DB-backed uploads volume
+# (backend/uploads/, already gitignored above), which is the actual source
+# of truth per the DB-backed-content architecture. These are just scratch.
+docs/assets/screenshots/
