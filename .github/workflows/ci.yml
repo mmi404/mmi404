@@ -3,7 +3,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [master]
+    branches: [main]
 
 jobs:
   backend:
@@ -64,7 +64,7 @@ jobs:
 
   docker-build-check:
     # PR-only: confirm both images build cleanly. Never pushes or deploys —
-    # that only happens from the deploy workflow on pushes to master (M9).
+    # that only happens from the deploy workflow on pushes to main (M9).
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
