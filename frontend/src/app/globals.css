@@ -1,0 +1,109 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+
+/*
+ * Dark-only "Cinematic Dark" theme: one shared navy/charcoal base with a
+ * gold accent, matching the client's other live projects. No light mode at
+ * launch (firm scope decision, not deferred) — but every color is a
+ * semantic custom property here rather than a hardcoded hex sprinkled
+ * through components, so a future light theme is a token remap (e.g. new
+ * values under a `:root[data-theme="light"]` block) rather than a rewrite.
+ */
+:root {
+  --color-surface: #0a0c12;
+  --color-surface-raised: #12151e;
+  --color-surface-overlay: rgba(6, 7, 11, 0.85);
+  --color-border-subtle: #232733;
+  --color-border-strong: #343a4a;
+
+  --color-text-primary: #f1efe9;
+  --color-text-secondary: #a7acb9;
+  --color-text-muted: #6d7280;
+
+  --color-accent: #cda45e;
+  --color-accent-hover: #e2bd7a;
+  --color-accent-soft: rgba(205, 164, 94, 0.14);
+  --color-focus-ring: #e2bd7a;
+}
+
+@theme inline {
+  --color-surface: var(--color-surface);
+  --color-surface-raised: var(--color-surface-raised);
+  --color-surface-overlay: var(--color-surface-overlay);
+  --color-border-subtle: var(--color-border-subtle);
+  --color-border-strong: var(--color-border-strong);
+
+  --color-primary: var(--color-text-primary);
+  --color-secondary: var(--color-text-secondary);
+  --color-muted: var(--color-text-muted);
+
+  --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-accent-soft: var(--color-accent-soft);
+  --color-focus-ring: var(--color-focus-ring);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  border-color: var(--color-border-subtle);
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-text-primary);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.font-display {
+  font-family: var(--font-display), ui-serif, Georgia, serif;
+}
+
+.font-mono-tag {
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/*
+ * Admin UI (M6) is deliberately plain/utilitarian — a solo-admin internal
+ * tool, not themed with the public site's design system. System font
+ * stack, light background, default Tailwind grays/blues. This class resets
+ * away the public site's --font-body (General Sans) custom property that
+ * `font-sans` would otherwise resolve to.
+ */
+.admin-shell {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    sans-serif;
+  color-scheme: light;
+  background: #f8fafc;
+  color: #0f172a;
+}

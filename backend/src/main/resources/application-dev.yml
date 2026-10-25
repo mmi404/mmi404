@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/portfolio?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: portfolio
+    password: portfolio
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  flyway:
+    url: jdbc:mysql://localhost:3306/portfolio?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    user: portfolio
+    password: portfolio
+
+logging:
+  level:
+    com.mmi404.portfolio: DEBUG
+
+app:
+  security:
+    # Dev runs over plain http://localhost — Secure cookies would never come back.
+    cookie-secure: false
+
+# Dev-only placeholder bootstrap credentials — the admin_user table is seeded from these
+# at startup ONLY if it's empty. Override with real env vars in any non-dev environment;
+# never commit real credentials here.
+ADMIN_BOOTSTRAP_USERNAME: admin
+ADMIN_BOOTSTRAP_PASSWORD: dev-only-change-me
+
+# Dev-only JWT signing secret. The base application.yml has no fallback for this on
+# purpose (see its comment) — never set a real value here or anywhere checked into git.
+JWT_SECRET: dev-only-insecure-jwt-signing-secret-change-me-please-32bytes+

@@ -1,0 +1,74 @@
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: portfolio
+      MYSQL_USER: portfolio
+      MYSQL_PASSWORD: portfolio
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_dev_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Full-stack parity testing (M7): brings up backend + frontend alongside
+  # mysql so `docker compose up` exercises the same containerized stack that
+  # ships to prod, not the native `mvnw`/`npm run dev` processes used during
+  # day-to-day M1-M6 development.
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      # application.yml defaults spring.profiles.active to "dev", which
+      # pulls in application-dev.yml's dev-only JWT secret, bootstrap admin
+      # credentials, and relaxed cookie-secure=false — all appropriate for
+      # this dev compose. Only the DB host needs overriding: dev.yml points
+      # at localhost:3306 (bare-metal dev), but the backend container must
+      # reach MySQL via the Compose service name instead.
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/portfolio?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: portfolio
+      SPRING_DATASOURCE_PASSWORD: portfolio
+      SPRING_FLYWAY_URL: jdbc:mysql://mysql:3306/portfolio?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_FLYWAY_USER: portfolio
+      SPRING_FLYWAY_PASSWORD: portfolio
+    ports:
+      - "8080:8080"
+    volumes:
+      - backend_dev_uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      # Server-only (not NEXT_PUBLIC_*) — read at request time, not baked
+      # into the build, so this is the only place it needs to be set for
+      # the container to reach the backend by its Compose service name.
+      API_BASE_URL: http://backend:8080
+    ports:
+      - "3000:3000"
+
+volumes:
+  mysql_dev_data:
+  backend_dev_uploads:
