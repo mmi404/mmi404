@@ -1,0 +1,38 @@
+# Portfolio site blocks for the VPS's SHARED Caddy (/opt/shared-proxy/Caddyfile).
+#
+# The VPS already runs one Caddy container (shared_proxy_caddy) that owns host
+# ports 80/443 for several unrelated sites, so this project does NOT ship its
+# own Caddy. Append these blocks to the shared Caddyfile, then:
+#
+#   docker exec shared_proxy_caddy caddy validate --config /etc/caddy/Caddyfile
+#   docker exec shared_proxy_caddy caddy reload   --config /etc/caddy/Caddyfile
+#
+# The portfolio's frontend container must be named `portfolio_frontend` and be
+# attached to the external Docker network `edge` (the network Caddy sits on).
+# The backend and MySQL stay on the project's private network: the Next.js
+# frontend proxies /api/*, /media/* and the admin calls to the backend itself,
+# so Caddy only ever talks to the frontend.
+#
+# TLS is Caddy-managed (ACME); DNS for both names points at this VPS.
+
+mmi404.com {
+    encode zstd gzip
+
+    header {
+        X-Content-Type-Options nosniff
+        Referrer-Policy strict-origin-when-cross-origin
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        -Server
+    }
+
+    reverse_proxy portfolio_frontend:3000
+
+    log {
+        output stdout
+        format json
+    }
+}
+
+www.mmi404.com {
+    redir https://mmi404.com{uri} permanent
+}
